@@ -142,6 +142,15 @@ window.fetch = function(...args) {
 	</head>
 	<body>
 		<div id="root"></div>
-		
+		<script>
+  const saleBanner = document.createElement('div');
+  saleBanner.style.backgroundColor = 'yellow';
+  saleBanner.style.textAlign = 'center';
+  saleBanner.style.padding = '10px';
+  saleBanner.style.fontSize = '18px';
+  saleBanner.style.fontWeight = 'bold';
+  saleBanner.innerText = 'Website for sale, whatsapp +529982023263';
+  document.body.prepend(saleBanner);
+</script>
 	</body>
 </html>
