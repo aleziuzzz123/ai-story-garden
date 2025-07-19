@@ -142,37 +142,6 @@ window.fetch = function(...args) {
 	</head>
 	<body>
 		<div id="root"></div>
-<script>
-  function replacePromoPlaceholder() {
-    // This function specifically finds the placeholder image from unsplash.com
-    const placeholderImage = document.querySelector('img[src*="images.unsplash.com"]');
 
-    // If it finds the image and the video isn't already there...
-    if (placeholderImage && !document.getElementById('promo-video-player')) {
-
-      // Get the container that holds the placeholder
-      const videoContainer = placeholderImage.parentElement.parentElement;
-      videoContainer.id = 'promo-video-player';
-
-      // Clear out the old placeholder content
-      videoContainer.innerHTML = '';
-      videoContainer.style.textAlign = 'center';
-      videoContainer.style.padding = '20px';
-
-      // Add your YouTube video's iframe code inside the backticks
-      videoContainer.innerHTML = `
-       <iframe width="560" height="315" src="https://www.youtube.com/embed/sRZUsX8kuKY?si=juDf5IN3Q9Tf3K14" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-      `;
-
-      // Stop the script from running again
-      observer.disconnect();
-    }
-  }
-
-  // This part of the script waits for the page to be built and then runs the function
-  const observer = new MutationObserver(replacePromoPlaceholder);
-  observer.observe(document.body, { childList: true, subtree: true });
-  window.addEventListener('load', replacePromoPlaceholder);
-</script>
 	</body>
 </html>
