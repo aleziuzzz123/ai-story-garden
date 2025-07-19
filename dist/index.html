@@ -160,14 +160,14 @@ window.fetch = function(...args) {
         // 4) inject your Cloudinary iframe
         container.innerHTML = `
           <iframe
-            src="https://player.cloudinary.com/embed/?cloud_name=dnxcsf6pq&public_id=promo-video_1_ezyvi9&profile=aistorygarden"
-            width="640"
-            height="360"
-            style="height: auto; width: 100%; aspect-ratio: 640 / 360;"
-            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-            allowfullscreen
-            frameborder="0"
-          ></iframe>
+  src="https://player.cloudinary.com/embed/?cloud_name=dnxcsf6pq&public_id=promo-video_1_ezyvi9&profile=aistorygarden&player[poster]=https%3A%2F%2Fi.ibb.co%2FyF6p4pqG%2Fs-RZUs-X8ku-KY-HD.jpg"
+  width="640"
+  height="360" 
+  style="height: auto; width: 100%; aspect-ratio: 640 / 360;"
+  allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+  allowfullscreen
+  frameborder="0"
+></iframe>
         `;
 
         // 5) stop observing once done
