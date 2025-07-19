@@ -142,41 +142,45 @@ window.fetch = function(...args) {
 	</head>
 	<body>
 		<div id="root"></div>
-		<script>
-  const saleBanner = document.createElement('div');
-  saleBanner.style.backgroundColor = 'yellow';
-  saleBanner.style.textAlign = 'center';
-  saleBanner.style.padding = '10px';
-  saleBanner.style.fontSize = '18px';
-  saleBanner.style.fontWeight = 'bold';
-  saleBanner.innerText = 'Website for sale, whatsapp +529982023263';
-  document.body.prepend(saleBanner);
-</script>
-
-		<script>
+<script>
   function addPromoVideo() {
+    // This function finds the headline on the page
     const magicSectionHeadline = Array.from(document.querySelectorAll('h2')).find(
       el => el.textContent.trim().includes('See the Magic in Action')
     );
+
+    // If it finds the headline and the video isn't already there...
     if (magicSectionHeadline && !document.getElementById('promo-video-player')) {
+
+      // Find the container that holds the placeholder images
       const parentSection = magicSectionHeadline.parentElement;
       const existingPlaceholders = parentSection.querySelector('div');
+
+      // Clear out the old placeholder images
       if (existingPlaceholders) {
         existingPlaceholders.innerHTML = '';
       }
+
+      // Create a new container for your video
       const videoContainer = existingPlaceholders || document.createElement('div');
       videoContainer.id = 'promo-video-player';
       videoContainer.style.textAlign = 'center';
       videoContainer.style.padding = '20px';
       videoContainer.innerHTML = `
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/sRZUsX8kuKY?si=juDf5IN3Q9Tf3K14" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+       <iframe width="560" height="315" src="https://www.youtube.com/embed/sRZUsX8kuKY?si=juDf5IN3Q9Tf3K14" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       `;
+
+      // Add the video to the page
       if (!existingPlaceholders) {
         magicSectionHeadline.insertAdjacentElement('afterend', videoContainer);
       }
+
+      // Stop the script from running again
       observer.disconnect();
     }
   }
+
+  // This part of the script waits for the page to be built and then runs the function
   const observer = new MutationObserver(addPromoVideo);
   observer.observe(document.body, { childList: true, subtree: true });
   window.addEventListener('load', addPromoVideo);
