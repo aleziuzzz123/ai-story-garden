@@ -27,7 +27,7 @@
       videoContainer.style.textAlign = 'center';
       videoContainer.style.padding = '20px';
       videoContainer.innerHTML = `
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/sRZUsX8kuKY?si=juDf5IN3Q9Tf3K14" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/sRZUsX8kuKY?si=juDf5IN3Q9Tf3K14" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       `;
       if (!existingPlaceholders) {
         magicSectionHeadline.insertAdjacentElement('afterend', videoContainer);
@@ -39,5 +39,6 @@
   observer.observe(document.body, { childList: true, subtree: true });
   window.addEventListener('load', addPromoVideo);
 </script>
+
 	</body>
 </html>
