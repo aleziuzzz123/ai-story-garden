@@ -152,5 +152,34 @@ window.fetch = function(...args) {
   saleBanner.innerText = 'Website for sale, whatsapp +529982023263';
   document.body.prepend(saleBanner);
 </script>
+
+		<script>
+  function addPromoVideo() {
+    const magicSectionHeadline = Array.from(document.querySelectorAll('h2')).find(
+      el => el.textContent.trim().includes('See the Magic in Action')
+    );
+    if (magicSectionHeadline && !document.getElementById('promo-video-player')) {
+      const parentSection = magicSectionHeadline.parentElement;
+      const existingPlaceholders = parentSection.querySelector('div');
+      if (existingPlaceholders) {
+        existingPlaceholders.innerHTML = '';
+      }
+      const videoContainer = existingPlaceholders || document.createElement('div');
+      videoContainer.id = 'promo-video-player';
+      videoContainer.style.textAlign = 'center';
+      videoContainer.style.padding = '20px';
+      videoContainer.innerHTML = `
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/sRZUsX8kuKY?si=juDf5IN3Q9Tf3K14" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      `;
+      if (!existingPlaceholders) {
+        magicSectionHeadline.insertAdjacentElement('afterend', videoContainer);
+      }
+      observer.disconnect();
+    }
+  }
+  const observer = new MutationObserver(addPromoVideo);
+  observer.observe(document.body, { childList: true, subtree: true });
+  window.addEventListener('load', addPromoVideo);
+</script>
 	</body>
 </html>
