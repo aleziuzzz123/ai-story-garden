@@ -160,11 +160,9 @@ window.fetch = function(...args) {
       videoContainer.style.padding = '20px';
 
       // Add the HTML5 video player with your Cloudinary video URL
-      videoContainer.innerHTML = `
-        <video width="80%" style="max-width: 560px; border-radius: 12px;" controls autoplay muted loop>
-          <source src="https://player.cloudinary.com/embed/?cloud_name=dnxcsf6pq&public_id=promo-video_1_ezyvi9&player[colors][base]=%239771E9&player[colors][accent]=%238C27C5&player[posterOptions][transformation][start_offset]=47" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
+   videoContainer.innerHTML = `
+  <iframe  src="https://player.cloudinary.com/embed/?cloud_name=dnxcsf6pq&public_id=promo-video_1_ezyvi9&player[colors][base]=%239771E9&player[colors][accent]=%238C27C5&player[posterOptions][transformation][start_offset]=47"  width="640"  height="360"   style="height: auto; width: 100%; aspect-ratio: 640 / 360;"  allow="autoplay; fullscreen; encrypted-media; picture-in-picture"  allowfullscreen  frameborder="0"></iframe>
+`;
       `;
 
       // Stop the script from running again
