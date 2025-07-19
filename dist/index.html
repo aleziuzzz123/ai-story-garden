@@ -159,9 +159,12 @@ window.fetch = function(...args) {
       videoContainer.style.textAlign = 'center';
       videoContainer.style.padding = '20px';
 
-      // Add your YouTube video's iframe code inside the backticks
+      // Add the HTML5 video player with your Cloudinary video URL
       videoContainer.innerHTML = `
-       <center><iframe width="728" height="410" src="https://www.youtube.com/embed/sRZUsX8kuKY?si=GWc2tGMMRyT7Wv32" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></center>
+        <video width="80%" style="max-width: 560px; border-radius: 12px;" controls autoplay muted loop>
+          <source src="https://player.cloudinary.com/embed/?cloud_name=dnxcsf6pq&public_id=promo-video_1_ezyvi9&player[colors][base]=%239771E9&player[colors][accent]=%238C27C5&player[posterOptions][transformation][start_offset]=47" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
       `;
 
       // Stop the script from running again
