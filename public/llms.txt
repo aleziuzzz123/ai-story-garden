@@ -1,9 +1,10 @@
 ## Pages
-- [Buy Credits - AI Story Garden](/credits): Purchase credits to create more magical storybooks with AI Story Garden.
-- [Community Garden - AI Story Garden](/communitygarden): Explore a garden of magical stories created by our community of authors.
-- [Create a New Story - AI Story Garden](/createstory): Bring your story idea to life. Describe your character, plot, and setting, and let our AI do the rest.
-- [Log In - AI Story Garden](/login): Log in to your AI Story Garden account and continue creating magical children
-- [My Cast - AI Story Garden](/mycast): Create and manage your personal cast of characters for your stories.
-- [My Sticker Book - AI Story Garden](/stickerbook): Collect and view all your magical stickers unlocked from your stories.
-- [My Stories - AI Story Garden](/dashboard): Your personal dashboard to manage and read your AI-generated storybooks.
-- [Sign Up - AI Story Garden](/signup): Create your free AI Story Garden account and start making magical children
+- [- AI Story Garden](/login): No description available
+- [- AI Story Garden](/signup): No description available
+- [Untitled Page](/communitygarden): No description available
+- [Untitled Page](/createstory): No description available
+- [Untitled Page](/credits): No description available
+- [Untitled Page](/dashboard): No description available
+- [Untitled Page](/landing): No description available
+- [Untitled Page](/mycast): No description available
+- [Untitled Page](/stickerbook): No description available

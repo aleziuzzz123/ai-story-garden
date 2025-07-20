@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useToast } from '@/components/ui/use-toast';
@@ -9,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Loader2, Plus, Sparkles, User, ArrowLeft, Users, Trash2 } from 'lucide-react';
+import { Loader2, User, Users, Trash2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,8 +22,10 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import CharacterCard from '@/components/characters/CharacterCard';
+import { Header } from '@/components/Header'; // Import the reusable Header
 
 const MyCastPage = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -47,13 +50,13 @@ const MyCastPage = () => {
         if (error) throw error;
         setCharacters(data);
       } catch (error) {
-        toast({ title: "Couldn't fetch your cast", description: error.message, variant: 'destructive' });
+        toast({ title: t('toast_my_cast_fetch_error'), description: error.message, variant: 'destructive' });
       } finally {
         setLoading(false);
       }
     };
     fetchCharacters();
-  }, [user, toast]);
+  }, [user, toast, t]);
   
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -63,12 +66,11 @@ const MyCastPage = () => {
   const handleCreateCharacter = async (e) => {
     e.preventDefault();
     if (!newCharacter.name || !newCharacter.description) {
-      toast({ title: "Missing details", description: "Please provide a name and description.", variant: "destructive" });
+      toast({ title: t('toast_my_cast_missing_details'), description: t('toast_my_cast_missing_details_desc'), variant: "destructive" });
       return;
     }
     setIsCreating(true);
     try {
-      // 1. Generate Image
       const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-character-image', {
         body: { description: newCharacter.description },
       });
@@ -76,9 +78,8 @@ const MyCastPage = () => {
       if (imageError) throw new Error(imageError.message);
       
       const imageUrl = imageData.imageUrl;
-      if(!imageUrl) throw new Error("Character image could not be generated.");
+      if(!imageUrl) throw new Error(t('toast_my_cast_image_fail'));
 
-      // 2. Save character to DB
       const { data: newCharacterData, error: insertError } = await supabase
         .from('characters')
         .insert({
@@ -94,10 +95,10 @@ const MyCastPage = () => {
       
       setCharacters(prev => [newCharacterData, ...prev]);
       setNewCharacter({ name: '', description: '' });
-      toast({ title: "Character Created! ✨", description: `${newCharacter.name} has joined your cast!`, variant: "success" });
+      toast({ title: t('toast_my_cast_creation_success_title'), description: t('toast_my_cast_creation_success_desc', { name: newCharacter.name }), variant: "success" });
 
     } catch(error) {
-      toast({ title: "Creation Failed", description: error.message, variant: 'destructive' });
+      toast({ title: t('toast_my_cast_creation_fail_title'), description: error.message, variant: 'destructive' });
     } finally {
       setIsCreating(false);
     }
@@ -111,9 +112,9 @@ const MyCastPage = () => {
       if (error) throw error;
 
       setCharacters(prev => prev.filter(c => c.id !== characterToDelete.id));
-      toast({ title: "Character Removed", description: `${characterToDelete.name} has left the cast.`, variant: "success" });
+      toast({ title: t('toast_my_cast_delete_success_title'), description: t('toast_my_cast_delete_success_desc', { name: characterToDelete.name }), variant: "success" });
     } catch(error) {
-       toast({ title: "Deletion Failed", description: error.message, variant: 'destructive' });
+       toast({ title: t('toast_my_cast_delete_fail_title'), description: error.message, variant: 'destructive' });
     } finally {
       setIsDeleting(false);
       setCharacterToDelete(null);
@@ -128,23 +129,13 @@ const MyCastPage = () => {
   return (
     <>
       <Helmet>
-        <title>My Cast - AI Story Garden</title>
-        <meta name="description" content="Create and manage your personal cast of characters for your stories." />
+        <title>{t('meta_title_my_cast')}</title>
+        <meta name="description" content={t('meta_description_my_cast')} />
       </Helmet>
+      
+      <Header />
+
       <div className="min-h-screen bg-gradient-to-br from-blue-300 via-purple-400 to-pink-400 text-white p-4 sm:p-6 md:p-8">
-        <header className="container mx-auto flex justify-between items-center mb-8">
-            <Link to="/dashboard">
-              <Button variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-            </Link>
-             <div className="flex items-center space-x-2">
-              <Sparkles className="h-8 w-8" />
-              <span className="text-2xl font-bold">AI Story Garden</span>
-            </div>
-        </header>
-        
         <main className="container mx-auto">
           <motion.div 
             className="text-center mb-12"
@@ -152,9 +143,9 @@ const MyCastPage = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             <Users className="mx-auto h-20 w-20 text-white/80 mb-4" />
-            <h1 className="text-5xl font-bold tracking-tight text-white drop-shadow-lg">My Cast</h1>
+            <h1 className="text-5xl font-bold tracking-tight text-white drop-shadow-lg">{t('my_cast_page_title')}</h1>
             <p className="mt-4 text-xl text-white/90 max-w-2xl mx-auto drop-shadow">
-              Create your own reusable characters! Design their look and personality, and add them to any story.
+              {t('my_cast_page_subtitle')}
             </p>
           </motion.div>
           
@@ -165,35 +156,35 @@ const MyCastPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <h2 className="text-3xl font-bold mb-6">Create a New Character</h2>
+              <h2 className="text-3xl font-bold mb-6">{t('my_cast_create_new_character')}</h2>
               <form onSubmit={handleCreateCharacter} className="space-y-6">
                 <div>
-                  <Label htmlFor="name" className="text-lg font-semibold">Character Name</Label>
+                  <Label htmlFor="name" className="text-lg font-semibold">{t('my_cast_character_name_label')}</Label>
                   <Input 
                     id="name"
                     name="name"
                     value={newCharacter.name}
                     onChange={handleInputChange}
-                    placeholder="e.g., Barnaby the Brave Bear"
+                    placeholder={t('my_cast_character_name_placeholder')}
                     className="mt-2 text-black"
                     disabled={isCreating}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="description" className="text-lg font-semibold">Character Description</Label>
+                  <Label htmlFor="description" className="text-lg font-semibold">{t('my_cast_character_desc_label')}</Label>
                   <Textarea 
                     id="description"
                     name="description"
                     value={newCharacter.description}
                     onChange={handleInputChange}
-                    placeholder="Describe their appearance and personality. e.g., 'A fluffy brown bear wearing a tiny red cape. He's curious, kind, and loves honey cakes.'"
+                    placeholder={t('my_cast_character_desc_placeholder')}
                     rows={5}
                     className="mt-2 text-black"
                     disabled={isCreating}
                   />
                 </div>
                 <Button type="submit" size="lg" className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 shadow-lg" disabled={isCreating}>
-                  {isCreating ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating...</> : <><User className="mr-2 h-5 w-5" /> Add to Cast</>}
+                  {isCreating ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> {t('my_cast_generating_button')}</> : <><User className="mr-2 h-5 w-5" /> {t('my_cast_add_to_cast_button')}</>}
                 </Button>
               </form>
             </motion.div>
@@ -227,10 +218,10 @@ const MyCastPage = () => {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                 >
-                  <img-replace alt="An empty stage with a single spotlight" className="w-40 h-40 mx-auto mb-4 opacity-80" />
-                  <h3 className="text-2xl font-bold">Your cast is empty!</h3>
+                  <img alt={t('alt_empty_stage')} className="w-40 h-40 mx-auto mb-4 opacity-80" src="/placeholder.svg" />
+                  <h3 className="text-2xl font-bold">{t('my_cast_empty_title')}</h3>
                   <p className="text-white/80 mt-2 max-w-sm mx-auto">
-                    Create your first character and get them ready for their debut story.
+                    {t('my_cast_empty_desc')}
                   </p>
                 </motion.div>
               )}
@@ -240,22 +231,22 @@ const MyCastPage = () => {
       </div>
 
        <AlertDialog open={!!characterToDelete} onOpenChange={() => setCharacterToDelete(null)}>
-				<AlertDialogContent className="rounded-3xl bg-white/90 backdrop-blur-lg border-none shadow-2xl">
-					<AlertDialogHeader>
-						<AlertDialogTitle className="text-2xl text-gray-800">Are you sure?</AlertDialogTitle>
-						<AlertDialogDescription className="text-gray-600">
-							This will permanently remove "{characterToDelete?.name}" from your cast. They can't be brought back!
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isDeleting} className="rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300">Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={handleDeleteCharacter} disabled={isDeleting} className="bg-red-500 hover:bg-red-600 text-white rounded-full">
-							{isDeleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-							{isDeleting ? 'Removing...' : 'Yes, remove them'}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
+        <AlertDialogContent className="rounded-3xl bg-white/90 backdrop-blur-lg border-none shadow-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl text-gray-800">{t('dialog_delete_title')}</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600">
+              {t('my_cast_dialog_delete_message', { name: characterToDelete?.name })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting} className="rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300">{t('dialog_cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteCharacter} disabled={isDeleting} className="bg-red-500 hover:bg-red-600 text-white rounded-full">
+              {isDeleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+              {isDeleting ? t('my_cast_dialog_removing') : t('my_cast_dialog_confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

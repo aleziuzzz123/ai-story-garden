@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import HTMLFlipBook from 'react-pageflip';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/customSupabaseClient';
@@ -16,9 +16,11 @@ import CoverPage from '@/components/book/CoverPage';
 import StoryPage from '@/components/book/StoryPage';
 import EndPage from '@/components/book/EndPage';
 import PdfPages from '@/components/book/PdfPages';
+import { Header } from '@/components/Header';
 
 const BookViewer = () => {
   const { id } = useParams();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const bookRef = useRef();
@@ -59,7 +61,7 @@ const BookViewer = () => {
       let audioUrl = page.audio_url;
   
       if (!audioUrl) {
-        toast({ title: "Generating narration...", description: "Please wait a moment." });
+        toast({ title: t('toast_narration_generating_title'), description: t('toast_narration_generating_desc') });
         const { data, error } = await supabase.functions.invoke('generate-narration', {
           body: {
             story_page_id: page.id,
@@ -86,8 +88,8 @@ const BookViewer = () => {
       };
       audioRef.current.onerror = () => {
         toast({
-          title: "Narration Error",
-          description: "Could not play the audio file.",
+          title: t('toast_narration_error_title'),
+          description: t('toast_narration_error_desc'),
           variant: "destructive",
         });
         setIsPlaying(false);
@@ -96,8 +98,8 @@ const BookViewer = () => {
   
     } catch (error) {
       toast({
-        title: "Narration Failed",
-        description: `Could not generate or play audio: ${error.message}`,
+        title: t('toast_narration_fail_title'),
+        description: t('toast_narration_fail_desc', { error: error.message }),
         variant: "destructive",
       });
       setNarratingPageId(null);
@@ -130,8 +132,8 @@ const BookViewer = () => {
 
       } catch (error) {
          toast({
-          title: "Story not found",
-          description: "The story you're looking for doesn't exist or you don't have permission to view it.",
+          title: t('toast_story_not_found_title'),
+          description: t('toast_story_not_found_desc'),
           variant: "destructive",
         });
       } finally {
@@ -146,7 +148,7 @@ const BookViewer = () => {
             audioRef.current.pause();
         }
     };
-  }, [id, user, toast]);
+  }, [id, user, toast, t]);
   
   const onPageFlip = (e) => {
     const newPageNumber = e.data;
@@ -162,8 +164,8 @@ const BookViewer = () => {
   const downloadPdf = async () => {
     setIsDownloading(true);
     toast({
-      title: "Generating PDF...",
-      description: "Please wait while we create your beautiful ebook.",
+      title: t('toast_pdf_generating_title'),
+      description: t('toast_pdf_generating_desc'),
     });
 
     const pdf = new jsPDF('p', 'pt', 'a4');
@@ -196,8 +198,8 @@ const BookViewer = () => {
     pdf.save(`${story.title.replace(/ /g, '_')}.pdf`);
     setIsDownloading(false);
     toast({
-      title: "Download Complete!",
-      description: "Your ebook has been successfully downloaded.",
+      title: t('toast_pdf_success_title'),
+      description: t('toast_pdf_success_desc'),
     });
   };
 
@@ -213,7 +215,7 @@ const BookViewer = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-orange-300 flex items-center justify-center">
         <Loader2 className="h-16 w-16 text-white animate-spin" />
-        <p className="text-white text-xl ml-4">Loading your story...</p>
+        <p className="text-white text-xl ml-4">{t('book_viewer_loading')}</p>
       </div>
     );
   }
@@ -223,11 +225,11 @@ const BookViewer = () => {
       <div className="min-h-screen bg-gradient-to-br from-purple-400 via-pink-400 to-orange-300 flex items-center justify-center">
         <div className="text-center">
           <BookOpen className="h-16 w-16 text-white mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-white mb-4">Story Not Found</h1>
-          <p className="text-white/80 mb-6">We couldn't find the pages for this story.</p>
+          <h1 className="text-2xl font-bold text-white mb-4">{t('book_viewer_not_found_title')}</h1>
+          <p className="text-white/80 mb-6">{t('book_viewer_not_found_desc')}</p>
           <Link to="/dashboard">
             <Button className="bg-white/20 border-white/30 text-white hover:bg-white/30">
-              Back to Dashboard
+              {t('create_page_back_to_dashboard')}
             </Button>
           </Link>
         </div>
@@ -243,8 +245,8 @@ const BookViewer = () => {
   return (
     <>
       <Helmet>
-        <title>{story.title} - AI Story Garden</title>
-        <meta name="description" content={`Read the magical story: ${story.title}`} />
+        <title>{t('meta_title_book_viewer', { title: story.title })}</title>
+        <meta name="description" content={t('meta_description_book_viewer', { title: story.title })} />
       </Helmet>
       
       <PdfPages ref={pdfPagesRef} story={story} pages={pages} backCoverImage={backCoverImage} />
@@ -260,7 +262,7 @@ const BookViewer = () => {
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{truncateTitle(story.title)}</h1>
             <p className="text-white/80 text-lg">
-              {currentPage > 0 && currentPage <= totalPages ? `Page ${currentPage} of ${totalPages}` : `Cover`}
+              {currentPage > 0 && currentPage <= totalPages ? t('book_viewer_page_indicator', { currentPage, totalPages }) : t('book_viewer_cover_indicator')}
             </p>
           </motion.div>
 
