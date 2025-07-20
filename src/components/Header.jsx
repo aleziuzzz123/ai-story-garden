@@ -18,7 +18,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-white/20 p-4 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-black/20 p-4 backdrop-blur-sm">
       <div className="container mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 text-white">
           <Sparkles className="h-8 w-8" />
@@ -57,3 +57,4 @@ export const Header = () => {
     </header>
   );
 };
+
