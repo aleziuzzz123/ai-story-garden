@@ -20,10 +20,11 @@ const languages = {
 
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" className="bg-white/20 border-white/30 text-white hover:bg-white/30">
           <Globe className="h-[1.2rem] w-[1.2rem]" />
         </Button>
       </DropdownMenuTrigger>
